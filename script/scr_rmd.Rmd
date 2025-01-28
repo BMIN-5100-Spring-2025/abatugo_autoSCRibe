@@ -1,0 +1,55 @@
+---
+title: "`r params$title`"
+author: ''
+date: "`r paste('Generated: ', Sys.time())`"
+output:
+  pagedown::html_paged:
+    css:
+    - default
+    toc: true
+    toc_depth: 6
+    number_sections: false
+    fig_caption: true
+    highlight: tango
+params:
+  title: "Subject Control Report"
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+# Load necessary libraries
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+cat("\\newpage\n")
+cat("## Total Enrollment \n\n")
+total_enrollment_tbl_major(data, major_grouping, minor_grouping, participant_id)
+total_enrollment_graph_major(data, major_grouping, minor_grouping, participant_id)
+total_enrollment_tbl_minor(data, major_grouping, minor_grouping, participant_id)
+total_enrollment_graph_minor(data, major_grouping, minor_grouping, participant_id)
+filter_na(data, participant_id, major_grouping, minor_grouping, var = minor_grouping)
+cat('<br>\n\n')
+cat("\\newpage\n")
+
+print('error')
+
+# Iterate over each variable in the dataset
+for (variable_name in selected_variable) {
+  
+  # Add a section heading for each variable
+  cat("\n") 
+  cat("## Variable:", variable_name, "\n\n")
+  
+  variable_data <- data[[variable_name]]
+  
+  # Check if the variable is numeric
+  if (is.numeric(variable_data)) {
+    numeric_stats_wrapper(data, variable_name, major_grouping, minor_grouping, participant_id)
+  }
+  else {
+    cat_stats_wrapper(data, variable_name, major_grouping, minor_grouping, participant_id)
+  }
+  
+  cat("\\newpage\n")
+}
+```

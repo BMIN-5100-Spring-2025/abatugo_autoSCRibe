@@ -1,0 +1,21 @@
+PatientID,Hospital,Age,Sex,BMI,Ethnicity,Race_American_Indian_Alaskan_Native,Race_Asian,Race_Native_Hawaiian_Other_Pacific_Islander,Race_Black_African_American,Race_White,Race_Unknown_Not_Reported,Participant_Type
+1,HOSP_1,45,Male,32.5,Hispanic or Latino,0,0,0,0,1,0,Case
+2,HOSP_2,38,Female,27.3,Not Hispanic or Latino,0,0,0,1,0,0,Control
+3,HOSP_3,60,Female,45.8,Hispanic or Latino,0,0,0,1,0,0,Case
+4,HOSP_1,29,Male,,Not Hispanic or Latino,0,0,0,0,0,1,Control
+5,HOSP_2,54,Male,24.1,Not Hispanic or Latino,0,0,0,1,0,0,Case
+6,HOSP_3,72,Female,51.2,Hispanic or Latino,0,0,0,0,0,1,Case
+7,HOSP_1,67,,33.7,Not Hispanic or Latino,0,0,0,1,0,0,Control
+8,HOSP_2,41,Male,18,Hispanic or Latino,0,1,0,0,0,0,Case
+9,HOSP_3,50,Female,22.4,Not Hispanic or Latino,0,0,0,1,0,0,Control
+10,HOSP_1,55,Male,37.5,Not Hispanic or Latino,0,0,0,0,1,0,Case
+11,HOSP_2,33,Female,27.8,Hispanic or Latino,0,0,0,1,0,0,Case
+12,HOSP_3,80,Male,19.2,Not Hispanic or Latino,0,0,0,1,0,0,Control
+13,HOSP_1,,Female,24.9,Hispanic or Latino,0,1,0,0,0,0,Case
+14,HOSP_2,48,Male,29.4,Not Hispanic or Latino,0,0,0,1,0,0,Control
+15,HOSP_3,39,Female,61.5,Hispanic or Latino,0,0,0,0,0,1,Case
+16,HOSP_1,44,Male,34.7,Not Hispanic or Latino,0,0,0,0,1,0,Control
+17,HOSP_2,65,Female,28.3,Hispanic or Latino,0,1,0,0,0,0,Case
+18,HOSP_3,58,Male,,Not Hispanic or Latino,0,0,0,1,0,0,Control
+19,HOSP_1,23,Female,25.6,Hispanic or Latino,0,0,0,0,0,1,Case
+20,HOSP_2,62,Female,17.5,Not Hispanic or Latino,0,0,0,1,0,0,
