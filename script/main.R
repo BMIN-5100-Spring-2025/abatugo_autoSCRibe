@@ -1,35 +1,26 @@
-# loading in packages
-library(DT)
-library(ggplot2)
-library(dplyr)
-library(knitr)
-library(kableExtra)
-library(tidyverse)
-library(dplyr)
-library(knitr)
-library(kableExtra)
-require(gtsummary)
-require(gridExtra)
-require(rstatix)
-require(arsenal)
-require(readxl)
-library(dplyr)
-library(knitr)
-library(kableExtra)
-library(rmarkdown)
-
 # sourcing functions
 source('./script/functions.R') 
+
+load_libraries()
+
+Sys.setlocale("LC_ALL", "en_US.UTF-8")
+options(encoding = "UTF-8")
+
+
+# Set default directories if environment variables are not set
+input_dir <- Sys.getenv("INPUT_DIR", unset = "./data/input")
+output_dir <- Sys.getenv("OUTPUT_DIR", unset = "./data/output")
 
 # getting parameters
 getting_params() 
 
 # getting report variables
-variables <- readxl::read_excel('./data/input/configs.xlsx', sheet = 2) 
+variables_file <- file.path(input_dir, "configs.xlsx")
+variables <- readxl::read_excel(variables_file, sheet = 2) 
 report_vars <- variables %>% select(variable) %>% pull()
 
 # getting data
-data <- read_csv(paste0('./data/input/', params_data$data))
+data <- read_csv(paste0(input_dir, '/', params_data$data))
 data <- validate_data_types(data, variables)
 
 selected_variable <- report_vars
