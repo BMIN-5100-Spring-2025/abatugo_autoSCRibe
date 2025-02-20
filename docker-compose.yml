@@ -1,0 +1,13 @@
+services:
+  app:
+    image: autoscribe:0.0.3
+    platform: linux/x86-64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - INPUT_DIR=/data/input
+      - OUTPUT_DIR=/data/output
+    volumes:
+      - ./data/input:/data/input:ro
+      - ./data/output:/data/output

@@ -1,6 +1,25 @@
+## loading libraries
+load_libraries <- function() {
+  # Define a vector of required package names
+  required_packages <- c("DT", "ggplot2", "dplyr", "knitr", "kableExtra", "tidyverse", 
+                         "gtsummary", "gridExtra", "rstatix", "arsenal", "readxl", "rmarkdown", "pagedown")
+  
+  # Loop over each package name
+  for(pkg in required_packages) {
+    # Check if the package is installed; if not, install it
+    if (!require(pkg, character.only = TRUE)) {
+      library(pkg, character.only = TRUE)
+    }
+  }
+}
+
 ## getting configurations ##
 getting_params <- function(){
   
+  # param_data <- readxl::read_excel('./data/input/configs.xlsx')
+  #print(getwd())  # Check working directory
+  #print(list.files("/data/input", full.names = TRUE))
+  #print(file.exists("/data/input/configs.xlsx"))  # Should return TRUE
   param_data <- readxl::read_excel('./data/input/configs.xlsx')
   # Convert parameters into a named list
   params_data <<- setNames(as.list(param_data$value), param_data$variable) # setting to global environment
@@ -122,17 +141,17 @@ numeric_stats_wrapper <- function(data, variable_name, major_grouping, minor_gro
   
   if (summary_type=='all'){
     # Compute summary statistics for numeric variables
-    cat("### Summary Statistics", "\n\n")
+    cat("### Summary Statistics", "\n")
     stats_num_all(data, variable_name, major_grouping = major_grouping)
     stats_num(data, variable_name, major_grouping = major_grouping, minor_grouping = minor_grouping)
     cat('<br>\n\n')
-    cat("### Summary Visualizations", "\n\n")
+    cat("### Summary Visualizations", "\n")
     graphs_num_all(data, variable_name, major_grouping)
     cat('<br>')
     graphs_num(data, variable_name, major_grouping, minor_grouping)
     # for some reason need to add this code because of issues with adding headers after the plots 
     cat('<br>\n\n') 
-    cat("### Data Point of Concern", "\n\n")
+    cat("### Data Point of Concern", "\n")
     outliers_all(data, variable_name, major_grouping)
     cat('<br>')
     outliers_minor_group(data, variable_name, major_grouping, minor_grouping)
@@ -142,12 +161,12 @@ numeric_stats_wrapper <- function(data, variable_name, major_grouping, minor_gro
   }
   else if (summary_type=='stats_only'){
     # Compute summary statistics for numeric variables
-    cat("### Summary Statistics", "\n\n")
+    cat("### Summary Statistics", "\n")
     stats_num_all(data, variable_name, major_grouping = major_grouping)
     cat('<br>')
     stats_num(data, variable_name, major_grouping = major_grouping, minor_grouping = minor_grouping)
     cat('<br>\n\n') 
-    cat("### Data Point of Concern", "\n\n")
+    cat("### Data Point of Concern", "\n")
     outliers_all(data, variable_name, major_grouping)
     cat('<br>')
     outliers_minor_group(data, variable_name, major_grouping, minor_grouping)
@@ -157,13 +176,13 @@ numeric_stats_wrapper <- function(data, variable_name, major_grouping, minor_gro
   }
   
   else if (summary_type=='visualizations_only'){
-    cat("### Summary Visualizations", "\n\n")
+    cat("### Summary Visualizations", "\n")
     graphs_num_all(data, variable_name, major_grouping)
     cat('<br>')
     graphs_num(data, variable_name, major_grouping, minor_grouping)
     # for some reason need to add this code because of issues with adding headers after the plots 
     cat('<br>\n\n') 
-    cat("### Data Point of Concern", "\n\n")
+    cat("### Data Point of Concern", "\n")
     outliers_all(data, variable_name, major_grouping)
     cat('<br>')
     outliers_minor_group(data, variable_name, major_grouping, minor_grouping)
@@ -286,37 +305,37 @@ cat_stats_wrapper <- function(data, variable_name, major_grouping, minor_groupin
     filter(variable == variable_name) %>% pull(summary_type)
   
   if (summary_type=='all'){
-    cat("### Summary Statistics", "\n\n")
+    cat("### Summary Statistics", "\n")
     stats_cat_major_grouping(data, major_grouping, variable_name)
     cat('<br>\n\n') 
     stats_cat_minor_grouping(data, major_grouping, minor_grouping, variable_name)
     #cat('<br>')
     cat('<br>\n\n') 
-    cat("### Summary Visualizations", "\n\n")
+    cat("### Summary Visualizations", "\n")
     graphs_cat(data, variable_name, major_grouping, minor_grouping)
     #cat('<br>')
     cat('<br>\n\n') 
-    cat("### Data Point of Concern", "\n\n")
+    cat("### Data Point of Concern", "\n")
     filter_na(data, participant_id, major_grouping, minor_grouping, variable_name)
   }
   
   else if (summary_type=='stats_only'){
-    cat("### Summary Statistics", "\n\n")
+    cat("### Summary Statistics", "\n")
     stats_cat_major_grouping(data, major_grouping, variable_name)
     cat('<br>\n\n') 
     stats_cat_minor_grouping(data, major_grouping, minor_grouping, variable_name)
     #cat('<br>')
     cat('<br>\n\n') 
-    cat("### Data Point of Concern", "\n\n")
+    cat("### Data Point of Concern", "\n")
     filter_na(data, participant_id, major_grouping, minor_grouping, variable_name)
   }
   
   else if (summary_type=='visualizations_only'){
-    cat("### Summary Visualizations", "\n\n")
+    cat("### Summary Visualizations", "\n")
     graphs_cat(data, variable_name, major_grouping, minor_grouping)
     #cat('<br>')
     cat('<br>\n\n') 
-    cat("### Data Point of Concern", "\n\n")
+    cat("### Data Point of Concern", "\n")
     filter_na(data, participant_id, major_grouping, minor_grouping, variable_name)
   }
   

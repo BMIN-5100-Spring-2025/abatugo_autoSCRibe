@@ -4,8 +4,7 @@ author: ''
 date: "`r paste('Generated: ', Sys.time())`"
 output:
   pagedown::html_paged:
-    css:
-    - default
+    css: ["default", "header-footer.css"]
     toc: true
     toc_depth: 6
     number_sections: false
