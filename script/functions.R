@@ -20,7 +20,10 @@ getting_params <- function(){
   #print(getwd())  # Check working directory
   #print(list.files("/data/input", full.names = TRUE))
   #print(file.exists("/data/input/configs.xlsx"))  # Should return TRUE
-  param_data <- readxl::read_excel('./data/input/configs.xlsx')
+  input_dir <- Sys.getenv("INPUT_DIR", unset = "./data/input")
+  output_dir <- Sys.getenv("OUTPUT_DIR", unset = "./data/output")
+  param_path <- file.path(input_dir, "configs.xlsx")
+  param_data <- readxl::read_excel(param_path)
   # Convert parameters into a named list
   params_data <<- setNames(as.list(param_data$value), param_data$variable) # setting to global environment
   return(params_data)
@@ -136,7 +139,10 @@ get_selected_stats <- function(option) {
 numeric_stats_wrapper <- function(data, variable_name, major_grouping, minor_grouping, participant_id){
   
   # getting variables to summarize
-  summary_type <- readxl::read_excel('../data/input/configs.xlsx', sheet = 2) %>% 
+  input_dir <- Sys.getenv("INPUT_DIR", unset = "./data/input")
+  output_dir <- Sys.getenv("OUTPUT_DIR", unset = "./data/output")
+  param_path <- file.path(input_dir, "configs.xlsx")
+  summary_type <- readxl::read_excel(param_path, sheet = 2) %>% 
     filter(variable == variable_name) %>% pull(summary_type)
   
   if (summary_type=='all'){
@@ -301,7 +307,10 @@ graphs_num <- function(data, var, major_grouping, minor_grouping){
 cat_stats_wrapper <- function(data, variable_name, major_grouping, minor_grouping, participant_id){
   
   # getting variables to summarize
-  summary_type <- readxl::read_excel('../data/input/configs.xlsx', sheet = 2) %>% 
+  input_dir <- Sys.getenv("INPUT_DIR", unset = "./data/input")
+  output_dir <- Sys.getenv("OUTPUT_DIR", unset = "./data/output")
+  param_path <- file.path(input_dir, "configs.xlsx")
+  summary_type <- readxl::read_excel(param_path, sheet = 2) %>% 
     filter(variable == variable_name) %>% pull(summary_type)
   
   if (summary_type=='all'){
