@@ -30,7 +30,7 @@ participant_id <- params_data$participant_id
 
 # rendering the report
 title <- params_data$title
-render("./script/scr_rmd.Rmd", params = list(title = title), output_file = '../data/output/scr.html') # outputting as html
+render("./script/scr_rmd.Rmd", params = list(title = title), output_file = file.path(output_dir, "scr.html")) # outputting as html
 
 # outputting to pdf -- work on pdf output, getting error
 # pagedown::chrome_print('./data/output/scr.html', timeout = 5000000000000, output = './data/output/')
