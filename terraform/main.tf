@@ -32,3 +32,12 @@ resource "aws_s3_bucket_lifecycle_configuration" "batugo-autoscribe_expiration" 
     }
   }
 }
+
+resource "aws_ecr_repository" "abatugo_autoscribe" {
+  name                 = "abatugo_autoscribe"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
