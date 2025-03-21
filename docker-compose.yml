@@ -1,6 +1,6 @@
 services:
   app:
-    image: autoscribe:0.0.3
+    image: 061051226319.dkr.ecr.us-east-1.amazonaws.com/abatugo_autoscribe:0.0.6
     platform: linux/x86-64
     build:
       context: .
@@ -8,6 +8,9 @@ services:
     environment:
       - INPUT_DIR=/data/input
       - OUTPUT_DIR=/data/output
+      - RUNNING_ENV=local  
+      - CONFIG_FILE_NAME=configs.xlsx 
+      - DATA_FILE_NAME=data.csv  
     volumes:
       - ./data/input:/data/input:ro
       - ./data/output:/data/output
