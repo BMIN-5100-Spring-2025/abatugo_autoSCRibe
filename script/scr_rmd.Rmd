@@ -1,7 +1,7 @@
 ---
 title: "`r params$title`"
 author: ''
-date: "`r paste('Generated: ', Sys.time())`"
+date: "`r Sys.setenv(TZ = Sys.timezone()); formatted_time <- format(Sys.time(), '%a %b %d %X %Y %Z'); paste('Generated: ', formatted_time)`"
 output:
   pagedown::html_paged:
     css: ["default", "header-footer.css"]

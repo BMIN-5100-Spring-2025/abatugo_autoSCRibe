@@ -1,6 +1,7 @@
 ## loading libraries
 load_libraries <- function() {
   # Define a vector of required package names
+  # need aws.ec2metadata because of this error: https://stackoverflow.com/questions/56650049/how-to-access-s3-data-from-r-on-ec2-using-aws-s3-package-functions-write-using#:~:text=1.,ec2metadata&text=If%20R%20is%20running%20on,ec2metadata%20package%20is%20installed.
   required_packages <- c("DT", "ggplot2", "dplyr", "knitr", "kableExtra", "tidyverse", 
                          "gtsummary", "gridExtra", "rstatix", "arsenal", "readxl", "rmarkdown", "pagedown", "aws.s3", "aws.iam", "aws.ec2metadata")
   
@@ -16,16 +17,6 @@ load_libraries <- function() {
 ## getting configurations ##
 getting_params <- function(variables_file){
   
-  # param_data <- readxl::read_excel('./data/input/configs.xlsx')
-  #print(getwd())  # Check working directory
-  #print(list.files("/data/input", full.names = TRUE))
-  #print(file.exists("/data/input/configs.xlsx"))  # Should return TRUE
-  
-  # below comments because of fargate adjustments
-  # input_dir <- Sys.getenv("INPUT_DIR", unset = "./data/input")
-  # output_dir <- Sys.getenv("OUTPUT_DIR", unset = "./data/output")
-  # param_path <- file.path(input_dir, "configs.xlsx")
-  # param_data <- readxl::read_excel(param_path)
   param_data <- readxl::read_excel(variables_file)
   # Convert parameters into a named list
   params_data <<- setNames(as.list(param_data$value), param_data$variable) # setting to global environment
