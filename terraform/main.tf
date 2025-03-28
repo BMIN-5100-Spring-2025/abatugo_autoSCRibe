@@ -40,6 +40,10 @@ resource "aws_ecr_repository" "abatugo_autoscribe" {
   image_scanning_configuration {
     scan_on_push = true
   }
+
+  tags = {
+    Owner = element(split("/", data.aws_caller_identity.current.arn), 1)
+  }
 }
 
 resource "aws_iam_role" "abatugo_autoscribe_ecs_task_execution_role" {
@@ -65,6 +69,38 @@ resource "aws_iam_role_policy_attachment" "abatugo_autoscribe_ecs_task_execution
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_iam_policy" "ecs_execution_task_policy" {
+  name        = "abatugo_autoscribe_ECSNetworkInterfacePolicy"
+  description = "Allows ECS Fargate to manage ENIs and CloudWatch logs"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:CreateNetworkInterface",
+        "ec2:AttachNetworkInterface",
+        "ec2:DeleteNetworkInterface",
+        "ec2:AssignPrivateIpAddresses",
+        "ec2:UnassignPrivateIpAddresses",
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutDestination",
+        "logs:PutLogEvents",
+        "logs:DescribeLogStreams",
+      ]
+      Resource = "*"
+    }]
+  })
+}
+
+resource "aws_iam_policy_attachment" "ecs_task_execution_policy_attachment" {
+  name       = "ECSTaskExecutionAttachment"
+  roles      = [aws_iam_role.abatugo_autoscribe_ecs_task_execution_role.name]
+  policy_arn = aws_iam_policy.ecs_execution_task_policy.arn
+}
+
 resource "aws_iam_role" "abatugo_autoscribe_ecs_task_role" {
   name = "abatugo_autoscribe_task_role"
 
@@ -83,14 +119,35 @@ resource "aws_iam_role" "abatugo_autoscribe_ecs_task_role" {
   })
 }
 
+resource "aws_iam_policy" "abatugo_autoscribe_task_role_policy" {
+          name        = "abatugo_autoscribe_task_role_policy"
+          description = "Policy for S3 task role"
+          policy = jsonencode({
+            Version = "2012-10-17"
+            Statement = [
+              {
+                Effect = "Allow"
+                Action = [
+                  "s3:*"
+                ]
+                Resource = [
+                  "arn:aws:s3:::${aws_s3_bucket.batugo-autoscribe.bucket}",
+                  "arn:aws:s3:::${aws_s3_bucket.batugo-autoscribe.bucket}/*"
+                ]
+              }
+            ]
+          })
+        }
+
 resource "aws_iam_role_policy_attachment" "abatugo_autoscribe_ecs_task_role_policy_attachment" {
   role       = aws_iam_role.abatugo_autoscribe_ecs_task_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  // policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  policy_arn = aws_iam_policy.abatugo_autoscribe_task_role_policy.arn
 }
 
 resource "aws_cloudwatch_log_group" "abatugo_autoscribe_task_log" {
   name = "/ecs/abatugo_autoscribe_task_log"
-
+  retention_in_days = 30
   tags = {
     Environment = "production"
     Application = "serviceA"
@@ -108,7 +165,8 @@ resource "aws_ecs_task_definition" "abatugo_autoscribe_task" {
   container_definitions = jsonencode([
     {
       name      = "abatugo_autoscribe_container"
-      image     = "061051226319.dkr.ecr.us-east-1.amazonaws.com/abatugo_autoscribe:0.0.8" 
+      image     = "061051226319.dkr.ecr.us-east-1.amazonaws.com/abatugo_autoscribe:0.0.9" 
+      // image     = aws_ecr_repository.abatugo_autoscribe.repository_url
       cpu       = 512
       memory    = 1024
       essential = true

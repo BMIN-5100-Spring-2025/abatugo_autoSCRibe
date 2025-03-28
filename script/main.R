@@ -1,4 +1,4 @@
-# Check if the application is running locally or on Fargate
+# Check if the application is running locally or on Fargate f
 running_env <- Sys.getenv("RUNNING_ENV", "local")  
 
 # sourcing functions
