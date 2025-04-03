@@ -154,6 +154,10 @@ resource "aws_cloudwatch_log_group" "abatugo_autoscribe_task_log" {
   }
 }
 
+variable "image_tag" {
+  default = "0.0.10"
+}
+
 resource "aws_ecs_task_definition" "abatugo_autoscribe_task" {
   family = "abatugo_autoscribe_task"
   requires_compatibilities = ["FARGATE"]
@@ -165,8 +169,9 @@ resource "aws_ecs_task_definition" "abatugo_autoscribe_task" {
   container_definitions = jsonencode([
     {
       name      = "abatugo_autoscribe_container"
-      image     = "061051226319.dkr.ecr.us-east-1.amazonaws.com/abatugo_autoscribe:0.0.9" 
+      // image     = "061051226319.dkr.ecr.us-east-1.amazonaws.com/abatugo_autoscribe:0.0.9" 
       // image     = aws_ecr_repository.abatugo_autoscribe.repository_url
+      image = "${aws_ecr_repository.abatugo_autoscribe.repository_url}:${var.image_tag}"
       cpu       = 512
       memory    = 1024
       essential = true
