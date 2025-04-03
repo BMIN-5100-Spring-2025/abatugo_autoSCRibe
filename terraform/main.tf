@@ -154,6 +154,7 @@ resource "aws_cloudwatch_log_group" "abatugo_autoscribe_task_log" {
   }
 }
 
+// tage for ecr image
 variable "image_tag" {
   default = "0.0.10"
 }
