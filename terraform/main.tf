@@ -217,3 +217,15 @@ resource "aws_ecs_task_definition" "abatugo_autoscribe_task" {
     size_in_gib = 150  
   }
 }
+
+resource "aws_s3_bucket_cors_configuration" "batugo-autoscribe_cors_configuration" {
+  bucket = aws_s3_bucket.batugo-autoscribe.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "POST", "PUT", "HEAD"]
+    allowed_origins = ["http://localhost:3000", "bmin5100.com", "*.bmin5100"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
+}
