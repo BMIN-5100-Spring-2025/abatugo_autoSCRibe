@@ -224,7 +224,7 @@ resource "aws_s3_bucket_cors_configuration" "batugo-autoscribe_cors_configuratio
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "POST", "PUT", "HEAD"]
-    allowed_origins = ["http://localhost:3000", "bmin5100.com", "*.bmin5100"]
+    allowed_origins = ["http://localhost:5173", "bmin5100.com", "*.bmin5100"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
