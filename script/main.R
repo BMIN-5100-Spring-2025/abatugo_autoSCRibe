@@ -19,10 +19,6 @@ print(s3_prefix)
 input_dir <- Sys.getenv("INPUT_DIR", unset = "/data/input")
 output_dir <- Sys.getenv("OUTPUT_DIR", unset = "/data/output")
 
-# see what iam user currently using
-#curr_role <- get_caller_identity()
-#print(paste("curr_role: ", curr_role))
-
 # s3 variables
 bucket_name <- "batugo-autoscribe"
 
@@ -31,10 +27,6 @@ config_file_name <- Sys.getenv("CONFIG_FILE_NAME", "configs.xlsx")
 variables_file <- file.path(input_dir, "configs.xlsx") # local config path
 if (running_env == "fargate") {
   # If running on Fargate, download the config file from S3
-  # s3_config_path <- paste("s3://", bucket_name, "/input/", config_file_name, sep="")
-  s3_config_key <- paste0("s3://", bucket_name, "/", s3_prefix, "input/", config_file_name)
-  print(s3_config_key)
-  # save_object(object = paste0('input/', config_file_name), bucket = bucket_name, file = variables_file) # /data/input/configs.xlsx test
   save_object(object = paste0(s3_prefix, "input/", config_file_name), bucket = bucket_name, file = variables_file)
   cat("Downloaded config file from S3.\n")
 } else {
@@ -50,15 +42,11 @@ variables <- readxl::read_excel(variables_file, sheet = 2)
 report_vars <- variables %>% select(variable) %>% pull()
 
 # getting data
-# s3_data_path <- paste("s3://", bucket_name, "/input/", params_data$data, sep="")
-# s3_data_key <- paste0("s3://", bucket_name, "/", s3_prefix, "input/", params_data$data)
-s3_data_key <- paste0(s3_prefix, "input/", params_data$data)
 local_data_path <- file.path(input_dir, params_data$data)
 
 if (running_env == "fargate") {
   # Save object back to S3
-  # save_object(object = s3_data_path, bucket = bucket_name, file = local_data_path)
-  save_object(object = s3_data_key, bucket = bucket_name, file = local_data_path)
+  save_object(object = paste0(s3_prefix, "input/", params_data$data), bucket = bucket_name, file = local_data_path)
   cat("Downloaded data from S3. \n")
 } else {
   # If running locally, you can work with local files
@@ -83,9 +71,7 @@ output_file_path <- file.path(output_dir, "scr.html")
 render("./script/scr_rmd.Rmd", params = list(title = title), output_file = output_file_path) # outputting as html
 
 if (running_env == "fargate") {
-  # s3_output_path <- paste("s3://", bucket_name, "/output/", 'scr.html', sep="")
-  # s3_output_path <- paste("s3://", bucket_name, "/", s3_prefix, "output/scr.html")
-  s3_output_path <- paste(s3_prefix, "output/scr.html")
+  s3_output_path <- paste0(s3_prefix, "output/scr.html")
   put_object(file = output_file_path, object = s3_output_path, bucket = bucket_name)
   cat("Processed data uploaded to S3.\n")
 } else {

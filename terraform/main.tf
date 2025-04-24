@@ -160,7 +160,7 @@ locals {
 
 // tage for ecr image
 variable "image_tag" {
-  default = "0.0.18"
+  default = "0.0.19"
 }
 
 resource "aws_ecs_task_definition" "abatugo_autoscribe_task" {
