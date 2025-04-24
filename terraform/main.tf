@@ -154,6 +154,10 @@ resource "aws_cloudwatch_log_group" "abatugo_autoscribe_task_log" {
   }
 }
 
+locals {
+  ecs_task_definition_container_name = "abatugo_autoscribe_container"
+}
+
 // tage for ecr image
 variable "image_tag" {
   default = "0.0.10"
@@ -169,9 +173,10 @@ resource "aws_ecs_task_definition" "abatugo_autoscribe_task" {
   task_role_arn         = aws_iam_role.abatugo_autoscribe_ecs_task_role.arn
   container_definitions = jsonencode([
     {
-      name      = "abatugo_autoscribe_container"
+      //name      = "abatugo_autoscribe_container"
       // image     = "061051226319.dkr.ecr.us-east-1.amazonaws.com/abatugo_autoscribe:0.0.9" 
       // image     = aws_ecr_repository.abatugo_autoscribe.repository_url
+      name = local.ecs_task_definition_container_name
       image = "${aws_ecr_repository.abatugo_autoscribe.repository_url}:${var.image_tag}"
       cpu       = 512
       memory    = 1024
@@ -228,4 +233,22 @@ resource "aws_s3_bucket_cors_configuration" "batugo-autoscribe_cors_configuratio
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
+}
+
+module "invoke_fargate_lambda" {
+  source = "git@github.com:BMIN-5100-Spring-2025/infrastructure.git//invoke_fargate_lambda/terraform?ref=f844e9c04f901768ccb99aff77286165bf71b83e"
+
+  project_name = "abatugo_autoscribe"
+  ecs_task_definition_arn = aws_ecs_task_definition.abatugo_autoscribe_task.arn
+  ecs_task_execution_role_arn = aws_iam_role.abatugo_autoscribe_ecs_task_execution_role.arn
+  ecs_task_task_role_arn = aws_iam_role.abatugo_autoscribe_ecs_task_role.arn
+  ecs_task_definition_container_name = local.ecs_task_definition_container_name
+
+  ecs_cluster_arn = data.terraform_remote_state.infrastructure.outputs.ecs_cluster_arn
+  ecs_security_group_id = data.terraform_remote_state.infrastructure.outputs.ecs_security_group_id
+  private_subnet_id = data.terraform_remote_state.infrastructure.outputs.private_subnet_id
+  api_gateway_authorizer_id = data.terraform_remote_state.infrastructure.outputs.api_gateway_authorizer_id
+  api_gateway_execution_arn = data.terraform_remote_state.infrastructure.outputs.api_gateway_execution_arn
+  api_gateway_id = data.terraform_remote_state.infrastructure.outputs.api_gateway_id
+  environment_variables = {}
 }
