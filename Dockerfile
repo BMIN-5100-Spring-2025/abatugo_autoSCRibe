@@ -22,6 +22,9 @@ RUN install2.r  \
     gtsummary \
     rstatix \
     pagedown \
+    aws.s3 \
+    aws.iam \
+    aws.ec2metadata \
     && rm -rf /tmp/downloaded_packages
 
 COPY script/ /script
